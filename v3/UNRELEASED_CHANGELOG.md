@@ -17,6 +17,7 @@ After processing, the content will be moved to the main changelog and this file 
 
 ## Added
 <!-- New features, capabilities, or enhancements -->
+- Add French documentation for installation and quick start in [PR](https://github.com/wailsapp/wails/pull/5354) by @leaanthony
 - Add Portuguese documentation for quick start, concepts, and community in [PR](https://github.com/wailsapp/wails/pull/5355) by @leaanthony
 
 ## Changed
