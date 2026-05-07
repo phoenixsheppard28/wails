@@ -22,10 +22,12 @@ typedef NS_ENUM(NSInteger, MacLiquidGlassStyle) {
 - (WebviewWindow*) initWithContentRect:(NSRect)contentRect styleMask:(NSUInteger)windowStyle backing:(NSBackingStoreType)bufferingType defer:(BOOL)deferCreation;
 {
     self = [super initWithContentRect:contentRect styleMask:windowStyle backing:bufferingType defer:deferCreation];
-    // Normalize NSPanel defaults back to NSWindow semantics: releasedWhenClosed
-    // (Go holds a raw pointer past [close]) and hidesOnDeactivate (otherwise
-    // every window vanishes on app switch).
+    // Use releasedWhenClosed=NO so closing never implicitly -releases the object;
+    // Go keeps an unsafe.Pointer to the NSWindow until native teardown runs
+    // windowClose/windowDestroy, which must -release to balance windowNew's -alloc.
     [self setReleasedWhenClosed:NO];
+    // NSPanel defaults hidesOnDeactivate=YES so panels hide when the app resigns active;
+    // normalize to NSWindow-like NO so ordinary windows stay visible on app switch.
     [self setHidesOnDeactivate:NO];
     [self setAlphaValue:1.0];
     [self setBackgroundColor:[NSColor clearColor]];

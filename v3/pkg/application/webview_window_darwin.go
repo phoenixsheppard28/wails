@@ -1112,7 +1112,11 @@ func (w *macosWebviewWindow) close() {
 	globalApplication.debug("Window close() called - setting unconditionallyClose flag", "windowId", w.parent.id, "title", w.parent.options.Title)
 	// Set the unconditionallyClose flag to allow the window to close
 	atomic.StoreUint32(&w.parent.unconditionallyClose, 1)
-	C.windowClose(w.nsWindow)
+	if w.nsWindow != nil {
+		C.windowClose(w.nsWindow)
+		// windowClose releases the ObjC object; clear the pointer so we never pass a dangling reference to C.
+		w.nsWindow = nil
+	}
 	globalApplication.debug("Window close() completed", "windowId", w.parent.id, "title", w.parent.options.Title)
 	// TODO: Check if we need to unregister the window here or not
 }
@@ -1627,7 +1631,10 @@ func (w *macosWebviewWindow) destroy() {
 	w.parent.markAsDestroyed()
 	// Clear caches for this window
 	clearWindowDragCache(w.parent.id)
-	C.windowDestroy(w.nsWindow)
+	if w.nsWindow != nil {
+		C.windowDestroy(w.nsWindow)
+		w.nsWindow = nil
+	}
 }
 
 func (w *macosWebviewWindow) setHTML(html string) {
