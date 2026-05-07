@@ -6,7 +6,11 @@
 #import <Cocoa/Cocoa.h>
 #import <WebKit/WebKit.h>
 
-@interface WebviewWindow : NSWindow
+// WebviewWindow inherits from NSPanel (not NSWindow) so windows opted in to
+// NSWindowStyleMaskNonactivatingPanel actually honor that style. The NSPanel
+// defaults that diverge from NSWindow (releasedWhenClosed, hidesOnDeactivate)
+// are normalized in the initializer in webview_window_darwin.m.
+@interface WebviewWindow : NSPanel
 - (BOOL) canBecomeKeyWindow;
 - (BOOL) canBecomeMainWindow;
 - (BOOL) acceptsFirstResponder;
